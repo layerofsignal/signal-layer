@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Signal Layer — Privacy Policy & Disclaimer</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f0f11; --surface: #18181c; --border: #2a2a30;
+      --text: #e2e2e8; --muted: #7a7a8a; --accent: #5b8fff;
+    }
+
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 15px; line-height: 1.75;
+      max-width: 720px; margin: 0 auto; padding: 60px 24px 80px;
+    }
+
+    header { margin-bottom: 52px; border-bottom: 1px solid var(--border); padding-bottom: 28px; }
+
+    .logo { font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 500; color: var(--accent); }
+    .logo-sub { font-size: 12px; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; margin-top: 4px; }
+
+    h1 { font-size: 28px; font-weight: 500; margin-top: 8px; }
+    .effective { font-size: 12px; color: var(--muted); margin-top: 6px; font-family: 'IBM Plex Mono', monospace; }
+
+    section { margin-bottom: 44px; }
+
+    h2 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; font-weight: 500;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 14px;
+    }
+
+    p { color: #c8c8d4; margin-bottom: 14px; }
+
+    .highlight {
+      background: var(--surface); border-left: 3px solid var(--accent);
+      padding: 16px 20px; border-radius: 0 6px 6px 0;
+      margin: 20px 0;
+    }
+    .highlight p { margin: 0; font-size: 14px; }
+
+    .warning {
+      background: rgba(255,82,82,.07); border-left: 3px solid #ff5252;
+      padding: 16px 20px; border-radius: 0 6px 6px 0;
+      margin: 20px 0;
+    }
+    .warning p { margin: 0; font-size: 14px; color: #ffaaaa; }
+
+    ul { padding-left: 20px; color: #c8c8d4; }
+    ul li { margin-bottom: 8px; }
+
+    .legal-block {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 24px 28px; margin-top: 20px;
+      font-size: 13px; line-height: 1.7; color: var(--muted);
+    }
+
+    footer {
+      margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border);
+      font-size: 11px; color: var(--muted); font-family: 'IBM Plex Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">◈ Signal Layer</div>
+  <div class="logo-sub">Content Signal Analyzer · Chrome Extension</div>
+  <h1>Privacy Policy &amp; Disclaimer</h1>
+  <div class="effective">Effective date: May 2026 · Version 0.3.0</div>
+</header>
+
+<!-- ── 1. Privacy ── -->
+<section>
+  <h2>1 · Privacy Policy</h2>
+
+  <div class="highlight">
+    <p><strong>Signal Layer collects zero user data.</strong> All analysis runs
+    entirely within your browser. No text, URL, score, or any other information
+    is ever transmitted to any server, third party, or developer.</p>
+  </div>
+
+  <p>Specifically, Signal Layer does <strong>not</strong>:</p>
+  <ul>
+    <li>Send any page content, text, or URL to external servers</li>
+    <li>Use cookies, local storage, or any persistent tracking mechanism</li>
+    <li>Require user accounts or any form of registration</li>
+    <li>Collect analytics, crash reports, or usage telemetry</li>
+    <li>Integrate with any third-party analytics or advertising platform</li>
+    <li>Communicate with any API endpoint (OpenAI, Anthropic, or otherwise)</li>
+  </ul>
+
+  <p>The extension requests two browser permissions:
+  <strong>activeTab</strong> (to read the content of the tab you are currently
+  viewing, only when you click "Analyze This Page") and
+  <strong>scripting</strong> (to inject the local analysis script into that tab).
+  Neither permission is used to transmit data outside your device.</p>
+</section>
+
+<!-- ── 2. What the Tool Measures ── -->
+<section>
+  <h2>2 · What Signal Layer Measures</h2>
+
+  <p>Signal Layer is a <strong>local heuristic analysis tool</strong>. It measures
+  statistical properties of text that are observable without any AI model or
+  remote service. Specifically, it computes:</p>
+
+  <ul>
+    <li><strong>Synthetic Content Signal</strong> — density of structured transitional
+    phrases commonly associated with template writing; sentence-length uniformity
+    (Coefficient of Variation); and lexical diversity (Type-Token Ratio).</li>
+    <li><strong>Template Repetition</strong> — frequency of repeated trigram
+    (three-word) clusters; presence of hard affiliate links (commission-based)
+    versus soft tracking links (analytics); and structural bullet-list density.</li>
+    <li><strong>Human Trace Score</strong> — a single composite number (0–100)
+    derived from the two signals above. Higher values indicate fewer synthetic
+    pattern signals. Lower values indicate denser template or repetitive
+    structural signals.</li>
+  </ul>
+
+  <p>These metrics are entirely statistical. They describe the <em>structure</em>
+  and <em>rhythm</em> of text, not its meaning, authorship, or origin.</p>
+</section>
+
+<!-- ── 3. Disclaimer ── -->
+<section>
+  <h2>3 · Disclaimer — Important Limitations</h2>
+
+  <div class="warning">
+    <p><strong>Signal Layer is not an AI authorship detection tool and does not
+    claim to be.</strong> Its scores must not be used as evidence of AI generation,
+    academic misconduct, plagiarism, or any form of disciplinary or legal claim.</p>
+  </div>
+
+  <p>The following limitations apply unconditionally:</p>
+
+  <ul>
+    <li><strong>No definitive conclusions.</strong> A low Human Trace Score does
+    not prove that content was generated by AI. A high score does not prove that
+    content was written by a human. Many factors — writing style, document type,
+    translation, formal register — affect scores independently of authorship.</li>
+
+    <li><strong>False positives exist.</strong> Formal academic writing, legal
+    documents, technical manuals, and translated text may score lower on the
+    Human Trace Scale due to their inherently structured and uniform nature.
+    This does not imply synthetic authorship.</li>
+
+    <li><strong>False negatives exist.</strong> Skilled human writers may use
+    transitional phrases or structured formats that produce higher synthetic
+    signal readings. Conversely, certain AI-generated texts may exhibit
+    high lexical diversity.</li>
+
+    <li><strong>Statistical signals only.</strong> All outputs are probabilistic
+    pattern observations, not measurements of authorship, intent, or origin.
+    Signal Layer provides no evidence usable in any disciplinary, academic,
+    employment, or legal proceeding.</li>
+
+    <li><strong>Not a substitute for professional judgment.</strong> Scores
+    should be treated as one exploratory data point among many, evaluated
+    alongside full context by a qualified human reader.</li>
+  </ul>
+
+  <div class="legal-block">
+    Signal Layer is provided "as is" without warranty of any kind, express or
+    implied. The developer makes no representations regarding the accuracy,
+    completeness, or fitness for any particular purpose of the scores produced
+    by this extension. Under no circumstances shall the developer be liable for
+    any direct, indirect, incidental, or consequential damages arising from the
+    use or misuse of this tool, including but not limited to academic sanctions,
+    reputational harm, employment decisions, or legal proceedings. By using
+    Signal Layer, you agree that scores are informational heuristics only and
+    accept full responsibility for how you interpret and act upon them.
+  </div>
+</section>
+
+<!-- ── 4. Contact ── -->
+<section>
+  <h2>4 · Contact</h2>
+  <p>For questions regarding this policy, please contact the developer through
+  the Chrome Web Store listing page.</p>
+</section>
+
+<footer>
+  Signal Layer · Chrome Extension · Privacy Policy v1.0 · May 2026
+</footer>
+
+</body>
+</html>
