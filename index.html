@@ -420,6 +420,71 @@
       font-family: var(--ff-mono);
     }
     @media (max-width: 640px) { .footer-note { margin-left: 0; } }
+
+    /* ─── Light mode (system preference) ───────────────────────────────── */
+    @media (prefers-color-scheme: light) {
+      :root {
+        --navy:        #f0f2f7;
+        --navy-mid:    #e4e8f2;
+        --navy-lite:   #d4daea;
+        --green:       #0e7a5a;
+        --green-dark:  #0a5c44;
+        --green-dim:   rgba(14,122,90,.10);
+        --text:        #1a1f2e;
+        --text-muted:  #4a5270;
+        --text-dim:    #8a92aa;
+        --border:      rgba(0,0,0,.09);
+        --surface:     rgba(0,0,0,.04);
+      }
+
+      body { background: #f0f2f7; }
+
+      /* Nav */
+      .nav { background: rgba(240,242,247,.92); }
+
+      /* Hero text */
+      .hero h1 { color: #1a1f2e; }
+      .hero h1 span { color: var(--green); }
+
+      /* Download band */
+      .download-band { background: var(--navy-mid); }
+      .download-band h2 { color: #1a1f2e; }
+
+      /* Privacy band */
+      .privacy-band { background: var(--navy-mid); }
+      .privacy-header { color: #1a1f2e; }
+
+      /* FAQ */
+      summary { color: #1a1f2e; }
+
+      /* Cards and surfaces */
+      .why-card, .measure-card, .signal-card,
+      .privacy-item, .example-item, .not-item,
+      .vision-phase, .why-card p, .measure-card p { color: var(--text-muted); }
+
+      /* Flow step numbers */
+      .flow-num { background: var(--navy-mid); color: var(--green); }
+
+      /* Signal SVG */
+      .signal-line { stroke: var(--navy-lite); }
+      .noise-dot   { fill: var(--text-dim); }
+
+      /* Ghost button */
+      .btn-ghost { color: #1a1f2e; border-color: rgba(0,0,0,.18); }
+
+      /* Footer */
+      .footer { background: transparent; }
+
+      /* h2 and h3 headings */
+      h2, h3 { color: #1a1f2e; }
+
+      .flow-content h3 { color: #1a1f2e; }
+      .example-type    { color: #1a1f2e; }
+      .measure-card h3 { color: #1a1f2e; }
+      .vision-phase h3 { color: #1a1f2e; }
+      .vision-phases   { border-color: rgba(0,0,0,.09); }
+      .vision-phase    { border-right-color: rgba(0,0,0,.09); }
+    }
   </style>
 </head>
 <body>
