@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Signal Layer — Statistical Web Content Analyzer</title>
+  <meta name="description" content="Signal Layer surfaces the statistical and structural signals that shape how a web page feels to read. 100% local. No server. No API. No data sent anywhere." />
+  <meta name="theme-color" content="#161b2e" />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://layerofsignal.github.io/signal-layer/" />
+  <meta property="og:title"       content="Signal Layer — Statistical Web Content Analyzer" />
+  <meta property="og:description" content="Surfaces the statistical patterns that make web content feel synthetic or organic. 100% local. No data leaves your browser." />
+  <meta property="og:image"       content="https://layerofsignal.github.io/signal-layer/assets/og-image.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="Signal Layer" />
+  <meta name="twitter:description" content="Statistical web content analysis. 100% local. No API. No data sent anywhere." />
+
+  <link rel="icon" href="assets/icon128.png" type="image/png" />
+  <link rel="canonical" href="https://layerofsignal.github.io/signal-layer/" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Reset & tokens ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:        #161b2e;
+      --navy-mid:    #1e2540;
+      --navy-lite:   #2b3354;
+      --green:       #2dd4a7;
+      --green-dark:  #1a9e5c;
+      --green-dim:   rgba(45,212,167,.12);
+      --text:        #e8eaf0;
+      --text-muted:  #8e97b0;
+      --text-dim:    #5c6480;
+      --border:      rgba(255,255,255,.07);
+      --surface:     rgba(255,255,255,.04);
+      --ff-sans:     'IBM Plex Sans', system-ui, sans-serif;
+      --ff-mono:     'IBM Plex Mono', monospace;
+      --max:         1100px;
+      --r:           10px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--ff-sans);
+      background: var(--navy);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Utilities ───────────────────────────────────────────────────── */
+    .wrap    { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+    .wrap-sm { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+    .eyebrow {
+      font-family: var(--ff-mono);
+      font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 20px;
+    }
+
+    section { padding: 96px 0; }
+    section + section { border-top: 1px solid var(--border); }
+
+    h2 {
+      font-size: clamp(26px, 4vw, 38px);
+      font-weight: 500; line-height: 1.2;
+      letter-spacing: -.02em; margin-bottom: 20px;
+    }
+    h3 { font-size: 17px; font-weight: 500; margin-bottom: 8px; }
+
+    p { color: var(--text-muted); }
+
+    a { color: var(--green); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ─── Buttons ─────────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--ff-sans); font-size: 14px; font-weight: 500;
+      padding: 12px 24px; border-radius: 8px;
+      cursor: pointer; border: none; transition: opacity .15s, transform .1s;
+      text-decoration: none !important;
+    }
+    .btn:hover  { opacity: .88; }
+    .btn:active { transform: scale(.98); }
+    .btn-primary { background: var(--green); color: var(--navy); }
+    .btn-ghost   {
+      background: transparent; color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    /* ─── Nav ─────────────────────────────────────────────────────────── */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(22,27,46,.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: var(--max); margin: 0 auto; padding: 0 24px;
+      height: 60px; display: flex; align-items: center; gap: 32px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 9px;
+      font-weight: 500; font-size: 15px; color: var(--text);
+      text-decoration: none !important; flex-shrink: 0;
+    }
+    .nav-logo img { border-radius: 6px; }
+    .nav-links { display: flex; gap: 28px; flex: 1; }
+    .nav-links a {
+      font-size: 14px; color: var(--text-muted);
+      text-decoration: none; transition: color .15s;
+    }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+    .nav-cta { margin-left: auto; }
+
+    @media (max-width: 680px) {
+      .nav-links { display: none; }
+    }
+
+    /* ─── Hero ────────────────────────────────────────────────────────── */
+    .hero {
+      padding: 88px 0 72px;
+      border-top: none;
+    }
+    .hero-inner {
+      max-width: var(--max); margin: 0 auto; padding: 0 24px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;
+    }
+    @media (max-width: 780px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-visual { order: -1; }
+    }
+
+    .hero h1 {
+      font-size: clamp(34px, 5.5vw, 56px);
+      font-weight: 500; line-height: 1.1;
+      letter-spacing: -.03em; margin-bottom: 20px;
+      color: #fff;
+    }
+    .hero h1 span { color: var(--green); }
+
+    .hero-sub {
+      font-size: 17px; line-height: 1.65;
+      color: var(--text-muted); margin-bottom: 32px; max-width: 480px;
+    }
+    .hero-actions { display: flex; flex-direction: column; gap: 12px; }
+    .hero-actions .btn { align-self: flex-start; }
+    .hero-meta {
+      font-family: var(--ff-mono); font-size: 11px; color: var(--text-dim);
+      letter-spacing: .06em;
+    }
+
+    /* noise → signal SVG animation */
+    .hero-visual { display: flex; align-items: center; justify-content: center; }
+    .signal-svg  { width: 100%; max-width: 480px; height: auto; }
+
+    .noise-dot {
+      fill: var(--text-dim);
+      animation: scatter 4s ease-in-out infinite;
+    }
+    .noise-dot:nth-child(1)  { animation-delay: 0s; }
+    .noise-dot:nth-child(2)  { animation-delay: .15s; }
+    .noise-dot:nth-child(3)  { animation-delay: .30s; }
+    .noise-dot:nth-child(4)  { animation-delay: .45s; }
+    .noise-dot:nth-child(5)  { animation-delay: .60s; }
+    .noise-dot:nth-child(6)  { animation-delay: .75s; }
+    .noise-dot:nth-child(7)  { animation-delay: .90s; }
+    .noise-dot:nth-child(8)  { animation-delay: 1.05s; }
+    .noise-dot:nth-child(9)  { animation-delay: 1.20s; }
+    .noise-dot:nth-child(10) { animation-delay: 1.35s; }
+
+    @keyframes scatter {
+      0%, 40%    { opacity: .45; transform: translate(0,0); }
+      60%, 100%  { opacity: .12; transform: translate(0, -3px); }
+    }
+
+    .signal-line {
+      stroke: var(--navy-lite); stroke-width: 1; stroke-dasharray: 4 6;
+    }
+    .signal-beam {
+      stroke: var(--green); stroke-width: 2; stroke-linecap: round;
+      stroke-dasharray: 320; stroke-dashoffset: 320;
+      animation: beam 4s ease-in-out infinite;
+    }
+    @keyframes beam {
+      0%, 20%  { stroke-dashoffset: 320; opacity: 0; }
+      50%, 70% { stroke-dashoffset: 0;   opacity: 1; }
+      90%,100% { stroke-dashoffset: 0;   opacity: 0; }
+    }
+
+    .signal-pulse {
+      fill: none; stroke: var(--green); stroke-width: 2;
+      transform-origin: 460px 110px;
+      animation: pulse 4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 55%  { r: 0;  opacity: 0; }
+      65%       { r: 14; opacity: 1; }
+      85%,100%  { r: 22; opacity: 0; }
+    }
+
+    .signal-dot-end {
+      fill: var(--green);
+      animation: dotappear 4s ease-in-out infinite;
+    }
+    @keyframes dotappear {
+      0%, 50%  { opacity: 0; transform: scale(.5); transform-origin: 460px 110px; }
+      65%,80%  { opacity: 1; transform: scale(1);  transform-origin: 460px 110px; }
+      95%,100% { opacity: 0; transform: scale(.5); transform-origin: 460px 110px; }
+    }
+
+    /* ─── Why section ─────────────────────────────────────────────────── */
+    .why-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+      gap: 16px; margin-top: 40px;
+    }
+    .why-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 24px;
+    }
+    .why-card h3 { font-size: 15px; color: var(--text); }
+    .why-card p  { font-size: 14px; line-height: 1.6; margin-top: 6px; }
+
+    /* ─── What it measures ────────────────────────────────────────────── */
+    .measures-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+      gap: 16px; margin-top: 40px;
+    }
+    .measure-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 28px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .measure-tag {
+      font-family: var(--ff-mono); font-size: 10px;
+      color: var(--green); letter-spacing: .1em; text-transform: uppercase;
+    }
+    .measure-card h3 { font-size: 18px; color: #fff; font-weight: 500; }
+    .measure-card p  { font-size: 14px; line-height: 1.6; flex: 1; }
+
+    /* ─── How it works ────────────────────────────────────────────────── */
+    .flow {
+      margin-top: 48px;
+      display: flex; flex-direction: column; gap: 0;
+      position: relative;
+    }
+    .flow::before {
+      content: ''; position: absolute; left: 23px; top: 0; bottom: 0;
+      width: 1px; background: var(--border);
+    }
+    .flow-step {
+      display: flex; gap: 20px; align-items: flex-start;
+      padding: 0 0 32px;
+      position: relative;
+    }
+    .flow-step:last-child { padding-bottom: 0; }
+    .flow-num {
+      flex-shrink: 0; width: 46px; height: 46px;
+      border-radius: 50%; background: var(--navy-mid);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--ff-mono); font-size: 13px;
+      color: var(--green); position: relative; z-index: 1;
+    }
+    .flow-content { padding-top: 10px; }
+    .flow-content h3 { font-size: 15px; color: var(--text); margin-bottom: 4px; }
+    .flow-content p  { font-size: 14px; line-height: 1.6; }
+
+    /* ─── Privacy band ────────────────────────────────────────────────── */
+    .privacy-band {
+      background: var(--navy-mid);
+      border-top: 1px solid var(--border) !important;
+      border-bottom: 1px solid var(--border) !important;
+    }
+    .privacy-header {
+      font-size: clamp(22px, 3.5vw, 32px); font-weight: 500; line-height: 1.3;
+      color: #fff; margin-bottom: 16px;
+    }
+    .privacy-header span { color: var(--green); }
+    .privacy-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+      gap: 12px; margin-top: 36px;
+    }
+    .privacy-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 16px 20px;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .privacy-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green); flex-shrink: 0; margin-top: 6px;
+    }
+    .privacy-item p { font-size: 13px; line-height: 1.5; color: var(--text-muted); }
+
+    /* ─── Examples ────────────────────────────────────────────────────── */
+    .example-list {
+      margin-top: 40px; display: flex; flex-direction: column; gap: 12px;
+    }
+    .example-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 20px 24px;
+      display: grid; grid-template-columns: 1fr 2fr; gap: 16px;
+    }
+    @media (max-width: 580px) {
+      .example-item { grid-template-columns: 1fr; }
+    }
+    .example-type {
+      font-family: var(--ff-mono); font-size: 12px;
+      color: var(--text); font-weight: 500;
+    }
+    .example-obs { font-size: 14px; line-height: 1.6; }
+
+    /* ─── What it's not ───────────────────────────────────────────────── */
+    .not-list {
+      margin-top: 36px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .not-item {
+      display: flex; gap: 14px; align-items: baseline;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 16px 20px;
+    }
+    .not-x {
+      font-family: var(--ff-mono); font-size: 14px;
+      color: var(--text-dim); flex-shrink: 0;
+    }
+    .not-item p { font-size: 14px; line-height: 1.5; }
+
+    /* ─── Vision ──────────────────────────────────────────────────────── */
+    .vision-phases {
+      margin-top: 40px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+      gap: 0;
+      border: 1px solid var(--border); border-radius: var(--r); overflow: hidden;
+    }
+    .vision-phase {
+      padding: 28px 24px;
+      border-right: 1px solid var(--border);
+    }
+    .vision-phase:last-child { border-right: none; }
+    .vision-phase-label {
+      font-family: var(--ff-mono); font-size: 10px; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px;
+    }
+    .vision-phase.active .vision-phase-label { color: var(--green); }
+    .vision-phase h3 { font-size: 16px; color: var(--text); margin-bottom: 8px; }
+    .vision-phase p  { font-size: 13px; line-height: 1.6; }
+    @media (max-width: 640px) {
+      .vision-phases { grid-template-columns: 1fr; }
+      .vision-phase  { border-right: none; border-bottom: 1px solid var(--border); }
+      .vision-phase:last-child { border-bottom: none; }
+    }
+
+    /* ─── FAQ ─────────────────────────────────────────────────────────── */
+    .faq-list { margin-top: 36px; display: flex; flex-direction: column; gap: 2px; }
+    details {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r); overflow: hidden;
+    }
+    summary {
+      padding: 18px 22px; font-weight: 500; font-size: 15px;
+      color: var(--text); cursor: pointer; list-style: none;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    summary::after {
+      content: '+'; font-family: var(--ff-mono); font-size: 18px;
+      color: var(--text-dim); transition: transform .2s;
+    }
+    details[open] summary::after { content: '−'; }
+    details p {
+      padding: 0 22px 18px; font-size: 14px; line-height: 1.7;
+      border-top: 1px solid var(--border); padding-top: 14px;
+    }
+
+    /* ─── Download ────────────────────────────────────────────────────── */
+    .download-band {
+      background: var(--navy-mid); text-align: center;
+    }
+    .download-band h2 { color: #fff; margin-bottom: 12px; }
+    .download-band .sub {
+      font-size: 16px; color: var(--text-muted);
+      margin-bottom: 32px; max-width: 480px; margin-left: auto; margin-right: auto;
+    }
+    .download-actions {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    }
+
+    /* ─── Footer ──────────────────────────────────────────────────────── */
+    .footer {
+      padding: 32px 0;
+      border-top: 1px solid var(--border);
+    }
+    .footer-inner {
+      max-width: var(--max); margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+    }
+    .footer-brand {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 14px; font-weight: 500; color: var(--text);
+    }
+    .footer-brand img { border-radius: 4px; }
+    .footer-links {
+      display: flex; gap: 20px; flex-wrap: wrap;
+    }
+    .footer-links a { font-size: 13px; color: var(--text-dim); text-decoration: none; }
+    .footer-links a:hover { color: var(--text-muted); }
+    .footer-note {
+      margin-left: auto; font-size: 12px; color: var(--text-dim);
+      font-family: var(--ff-mono);
+    }
+    @media (max-width: 640px) { .footer-note { margin-left: 0; } }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ────────────────────────────────────────────────────────────── -->
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <img src="assets/icon48.png" alt="Signal Layer" width="22" height="22" />
+      Signal Layer
+    </a>
+    <nav class="nav-links">
+      <a href="#why">Why</a>
+      <a href="#measures">What it measures</a>
+      <a href="#how">How it works</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a href="https://chromewebstore.google.com/detail/signal-layer/jogbmedmoohndeoinnpgaglnbbfekoll"
+       class="btn btn-primary nav-cta" target="_blank" rel="noopener">Add to Chrome</a>
+  </div>
+</header>
+
+<!-- ─── HERO ────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <p class="eyebrow">Statistical web content analysis</p>
+      <h1>The web is full of noise.<br><span>Signal Layer</span><br>helps you see the signal.</h1>
+      <p class="hero-sub">
+        A browser extension that surfaces the structural and linguistic patterns
+        behind web content — without sending a single character of text anywhere.
+      </p>
+      <div class="hero-actions">
+        <a href="https://chromewebstore.google.com/detail/signal-layer/jogbmedmoohndeoinnpgaglnbbfekoll"
+           class="btn btn-primary" target="_blank" rel="noopener">
+          Add to Chrome — it's free
+        </a>
+        <p class="hero-meta">100% local &nbsp;·&nbsp; No account &nbsp;·&nbsp; No data sent</p>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <svg class="signal-svg" viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- Baseline -->
+        <line x1="40" y1="110" x2="480" y2="110" class="signal-line" />
+
+        <!-- Noise dots -->
+        <circle class="noise-dot" cx="65"  cy="58"  r="3.5" />
+        <circle class="noise-dot" cx="90"  cy="152" r="2.5" />
+        <circle class="noise-dot" cx="115" cy="78"  r="4" />
+        <circle class="noise-dot" cx="148" cy="162" r="2.5" />
+        <circle class="noise-dot" cx="172" cy="52"  r="3" />
+        <circle class="noise-dot" cx="200" cy="148" r="3.5" />
+        <circle class="noise-dot" cx="228" cy="88"  r="4" />
+        <circle class="noise-dot" cx="258" cy="68"  r="2.5" />
+        <circle class="noise-dot" cx="284" cy="155" r="3" />
+        <circle class="noise-dot" cx="315" cy="62"  r="3.5" />
+
+        <!-- Signal beam -->
+        <line x1="340" y1="110" x2="455" y2="110" class="signal-beam" />
+
+        <!-- Pulse ring -->
+        <circle cx="460" cy="110" r="0" class="signal-pulse" />
+
+        <!-- Final dot -->
+        <circle cx="460" cy="110" r="7" class="signal-dot-end" />
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ─── WHY ─────────────────────────────────────────────────────────────── -->
+<section id="why">
+  <div class="wrap">
+    <p class="eyebrow">The problem</p>
+    <h2>Reading web content is harder than it should be.</h2>
+    <p style="max-width:600px; margin-bottom:0;">
+      Template-generated articles, affiliate farms, and AI-expanded text all
+      share structural properties that create friction — without ever triggering
+      a clear signal. Existing tools respond by asserting authorship claims
+      they cannot actually support. Signal Layer takes a different position:
+      observe the patterns; report what is there; do not overclaim.
+    </p>
+    <div class="why-grid">
+      <div class="why-card">
+        <h3>Template density</h3>
+        <p>Content built for ranking rather than reading tends to repeat the same three-word clusters, rely on heavy bullet structure, and saturate pages with affiliate links.</p>
+      </div>
+      <div class="why-card">
+        <h3>Synthetic phrasing</h3>
+        <p>Certain transitional phrase patterns, sentence rhythm uniformity, and low vocabulary variation surface in expanded or model-generated writing — measurably, across languages.</p>
+      </div>
+      <div class="why-card">
+        <h3>False certainty</h3>
+        <p>Confident-sounding percentages are the wrong response to this problem. They create liability without adding accuracy, and have already caused real harm in academic settings.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── WHAT IT MEASURES ─────────────────────────────────────────────────── -->
+<section id="measures">
+  <div class="wrap">
+    <p class="eyebrow">Output</p>
+    <h2>Three observable signals, one composite readout.</h2>
+    <p style="max-width:580px; margin-bottom:0;">
+      Every output is computed locally, in your browser, against the current
+      page. Nothing is inferred about authorship.
+    </p>
+    <div class="measures-grid">
+      <div class="measure-card">
+        <span class="measure-tag">Composite — 0 to 100</span>
+        <h3>Human Trace Score</h3>
+        <p>A single number summarising how organically the text is structured. Higher values indicate lower template and synthetic signal density. It is a structural observation, not an authorship determination.</p>
+      </div>
+      <div class="measure-card">
+        <span class="measure-tag">Synthetic Content Signal</span>
+        <h3>Phrase density · Rhythm · Vocabulary</h3>
+        <p>Measures the density of structured transitional phrases, the uniformity of sentence-length rhythm (Coefficient of Variation), and the breadth of vocabulary relative to text length (Type-Token Ratio).</p>
+      </div>
+      <div class="measure-card">
+        <span class="measure-tag">Template Repetition Signal</span>
+        <h3>Trigrams · Links · Structure</h3>
+        <p>Detects repeated three-word phrase clusters relative to text length, differentiates genuine affiliate commission links from standard analytics trackers, and measures bullet-heavy structural layouts.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── HOW IT WORKS ─────────────────────────────────────────────────────── -->
+<section id="how">
+  <div class="wrap-sm">
+    <p class="eyebrow">The current engine — v0.6</p>
+    <h2>What happens when you click "Analyze."</h2>
+    <p>Each step runs inside your browser. The page is never transmitted.</p>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-num">01</div>
+        <div class="flow-content">
+          <h3>Language detected</h3>
+          <p>The page's <code style="font-family:var(--ff-mono);font-size:13px;color:var(--green);">lang</code> attribute is read to select the correct phrase list and calibrated thresholds. Full linguistic analysis is applied for English, Turkish, Spanish, French, German, Portuguese, and Italian. Structural analysis is applied for other detected languages.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">02</div>
+        <div class="flow-content">
+          <h3>Text extracted from the DOM</h3>
+          <p>The visible text content is read from the page — exactly what a reader sees. No network request is made. For PDFs, the raw file is fetched locally and parsed with a bundled copy of PDF.js.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">03</div>
+        <div class="flow-content">
+          <h3>Academic context evaluated</h3>
+          <p>If the page is from a scholarly domain or contains markers such as <em>abstract</em>, <em>doi</em>, <em>references</em>, or <em>keywords</em>, thresholds are adjusted to prevent false positives on formal academic language — which is naturally uniform and terminology-dense without being synthetic.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">04</div>
+        <div class="flow-content">
+          <h3>Length-aware signals measured</h3>
+          <p>Thresholds for TTR and trigram density are adjusted by text length. A 100-word page naturally has high vocabulary diversity and few phrase repetitions; penalising it against the same scale as a 5,000-word article would be statistically unsound.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">05</div>
+        <div class="flow-content">
+          <h3>Scores composed and displayed</h3>
+          <p>The two sub-signals and the composite Human Trace Score are computed, and a plain-language explanation is assembled from the specific patterns that were observed. Results are cached locally for 24 hours by full URL — not by domain.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PRIVACY ──────────────────────────────────────────────────────────── -->
+<section class="privacy-band" id="privacy">
+  <div class="wrap">
+    <p class="eyebrow">Privacy by design</p>
+    <h2 class="privacy-header">Everything stays <span>on your device.</span></h2>
+    <p style="max-width:580px;">
+      The zero-data architecture is not a feature that can be disabled — it is
+      the foundational constraint around which everything else is built. There
+      is no server to send data to, because there is no server.
+    </p>
+    <div class="privacy-grid">
+      <div class="privacy-item">
+        <div class="privacy-dot"></div>
+        <p>No page content is ever transmitted — not to us, not to any API, not to any third party.</p>
+      </div>
+      <div class="privacy-item">
+        <div class="privacy-dot"></div>
+        <p>No account. No login. No persistent identifier of any kind.</p>
+      </div>
+      <div class="privacy-item">
+        <div class="privacy-dot"></div>
+        <p>The only optional data flow is the voluntary feedback button: domain name + score + your rating. Nothing else, and never automatically.</p>
+      </div>
+      <div class="privacy-item">
+        <div class="privacy-dot"></div>
+        <p>All analysis results are cached locally on your device with a 24-hour expiry, indexed by full URL — not domain.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── EXAMPLES ─────────────────────────────────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Observed patterns — representative, not exhaustive</p>
+    <h2>What the signals tend to surface.</h2>
+    <p style="max-width:580px; margin-bottom:0;">
+      These are structural tendencies, not verdicts on any specific site.
+      Calibration is ongoing.
+    </p>
+    <div class="example-list">
+      <div class="example-item">
+        <span class="example-type">Formal academic paper</span>
+        <p class="example-obs">Low vocabulary variation is expected and shielded from penalty — scientific terminology repeats by methodological necessity, not by template. Academic shield thresholds apply automatically.</p>
+      </div>
+      <div class="example-item">
+        <span class="example-type">Expanded SEO article</span>
+        <p class="example-obs">High phrase density of structured transitional expressions, elevated trigram repetition ratio, and heavy bullet-list architecture tend to surface together in high density.</p>
+      </div>
+      <div class="example-item">
+        <span class="example-type">Personal essay or blog</span>
+        <p class="example-obs">Irregular sentence-length rhythm, natural vocabulary variation, and low phrase-cluster repetition are characteristic of a single author's voice written under no template constraint.</p>
+      </div>
+      <div class="example-item">
+        <span class="example-type">Affiliate product review</span>
+        <p class="example-obs">Commission-based links (identified by known affiliate network patterns) are separated from standard analytics trackers, and their density is reported as a distinct signal.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── WHAT IT IS NOT ───────────────────────────────────────────────────── -->
+<section>
+  <div class="wrap-sm">
+    <p class="eyebrow">Scope</p>
+    <h2>What Signal Layer does not do.</h2>
+    <div class="not-list">
+      <div class="not-item">
+        <span class="not-x">×</span>
+        <p>Signal Layer does not determine authorship. It surfaces statistical patterns; it makes no claim about who wrote a page.</p>
+      </div>
+      <div class="not-item">
+        <span class="not-x">×</span>
+        <p>Signal Layer does not assert that content is AI-generated. It reports that certain structural and linguistic signals are present, and explains what they are.</p>
+      </div>
+      <div class="not-item">
+        <span class="not-x">×</span>
+        <p>Signal Layer does not upload, transmit, or log the text of any page you visit.</p>
+      </div>
+      <div class="not-item">
+        <span class="not-x">×</span>
+        <p>Signal Layer does not track your browsing activity or build a profile of your reading behaviour.</p>
+      </div>
+      <div class="not-item">
+        <span class="not-x">×</span>
+        <p>Signal Layer scores must not be used as sole evidence in academic, disciplinary, or legal decisions. They are statistical observations — one input among many for a qualified human reader.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── VISION ───────────────────────────────────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Direction</p>
+    <h2>Where this instrument is headed.</h2>
+    <p style="max-width:580px; margin-bottom:40px;">
+      Development follows the principle established in the lab: calibrate the
+      current layer completely before adding the next one.
+    </p>
+    <div class="vision-phases">
+      <div class="vision-phase active">
+        <div class="vision-phase-label">Phase I — Now</div>
+        <h3>Foundation & Calibration</h3>
+        <p>Robust multilingual structural analysis; length-aware and academic-context-aware thresholds; real-world calibration via voluntary feedback.</p>
+      </div>
+      <div class="vision-phase">
+        <div class="vision-phase-label">Phase II — Next</div>
+        <h3>Domain Intelligence</h3>
+        <p>Understanding a page in the context of the domain it lives on — building a local, private record of observed signal patterns across multiple visits.</p>
+      </div>
+      <div class="vision-phase">
+        <div class="vision-phase-label">Phase III</div>
+        <h3>Reading Environment</h3>
+        <p>A personal, fully local map of the quality of the sources you read — never shared, never synced, never leaving your device.</p>
+      </div>
+      <div class="vision-phase">
+        <div class="vision-phase-label">Phase IV</div>
+        <h3>Research Platform</h3>
+        <p>Batch analysis, institutional licensing, and a methodology-first API for researchers who need repeatable, explainable content quality signals at scale.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ──────────────────────────────────────────────────────────────── -->
+<section id="faq">
+  <div class="wrap-sm">
+    <p class="eyebrow">Questions</p>
+    <h2>Frequently asked.</h2>
+    <div class="faq-list">
+      <details>
+        <summary>Is this an AI detector?</summary>
+        <p>No. Signal Layer does not attempt to determine whether content was written by a human or a language model. It measures structural and statistical properties of text — repetition, rhythm, phrase density — and reports them as observations, not as authorship claims. The distinction is intentional and legally significant.</p>
+      </details>
+      <details>
+        <summary>Why no percentage, like "92% AI"?</summary>
+        <p>Because that level of precision is not supportable by the underlying mathematics. No text-analysis tool can reliably prove authorship from statistical patterns alone, and confident-sounding percentages have already caused documented harm in academic contexts. Signal Layer reports what it can actually defend.</p>
+      </details>
+      <details>
+        <summary>Does it read my browsing history?</summary>
+        <p>No. It reads only the page you are currently viewing, and only when you explicitly click "Analyze This Page." No background activity. No passive monitoring.</p>
+      </details>
+      <details>
+        <summary>Does it send any data anywhere?</summary>
+        <p>By default, nothing leaves your browser. The only optional exception is the feedback button: if you tap it, the page's domain name, the computed score, and your accurate/inaccurate rating are sent for calibration. This is always voluntary and clearly labelled.</p>
+      </details>
+      <details>
+        <summary>What languages does it support?</summary>
+        <p>Full linguistic analysis — including calibrated phrase-density detection and lexical diversity scoring — is available for English, Turkish, Spanish, French, German, Portuguese, and Italian. Structural analysis is applied for a broader range of additional languages. Coverage is expanding as calibration data matures.</p>
+      </details>
+      <details>
+        <summary>Does it work on PDF documents?</summary>
+        <p>Yes. Signal Layer can extract and analyze text from PDF documents opened in the browser, using a locally-bundled copy of PDF.js. The file is never uploaded. Scanned PDFs that contain no machine-readable text cannot currently be processed.</p>
+      </details>
+      <details>
+        <summary>Who built this?</summary>
+        <p>Signal Layer was built by an academic chemist — not a software company. The methodological approach (calibration before claims, explicit thresholds, documented limitations) reflects that background. The full methodology will be published separately.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ─── DOWNLOAD ─────────────────────────────────────────────────────────── -->
+<section class="download-band" id="download">
+  <div class="wrap">
+    <p class="eyebrow">Available now</p>
+    <h2>Add Signal Layer to Chrome.</h2>
+    <p class="sub">Free. Local. No account required. Works on Chrome, Edge, Brave, and all Chromium-based browsers.</p>
+    <div class="download-actions">
+      <a href="https://chromewebstore.google.com/detail/signal-layer/jogbmedmoohndeoinnpgaglnbbfekoll"
+         class="btn btn-primary" target="_blank" rel="noopener">
+        Add to Chrome
+      </a>
+      <a href="privacy-policy.html" class="btn btn-ghost">Privacy Policy</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ───────────────────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="assets/icon48.png" alt="" width="18" height="18" />
+      Signal Layer
+    </div>
+    <nav class="footer-links">
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="https://github.com/layerofsignal/signal-layer" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://chromewebstore.google.com/detail/signal-layer/jogbmedmoohndeoinnpgaglnbbfekoll" target="_blank" rel="noopener">Chrome Web Store</a>
+    </nav>
+    <p class="footer-note">Built by an analytical chemist, not a software company.</p>
+  </div>
+</footer>
+
+</body>
+</html>
