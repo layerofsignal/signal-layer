@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy - Signal Layer</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+    :root {
+      --bg: #ffffff;
+      --surface: #f6f8fa;
+      --border: #d0d7de;
+      --text: #24292f;
+      --muted: #57606a;
+      --accent: #0969da;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0d1117;
+        --surface: #161b22;
+        --border: #30363d;
+        --text: #c9d1d9;
+        --muted: #8b949e;
+        --accent: #58a6ff;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      padding: 40px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .header {
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header img {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+    }
+
+    .title-group h1 {
+      font-size: 24px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .title-group p {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .last-updated {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 30px;
+      font-style: italic;
+    }
+
+    h2 {
+      font-size: 18px;
+      color: var(--accent);
+      margin-top: 30px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    p {
+      margin-bottom: 16px;
+      font-size: 15px;
+    }
+
+    ul {
+      margin-left: 20px;
+      margin-bottom: 16px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    .highlight-box {
+      background: rgba(9, 105, 218, 0.05);
+      border-left: 4px solid var(--accent);
+      padding: 16px;
+      margin: 20px 0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .highlight-box p {
+      margin: 0;
+      font-weight: 500;
+    }
+
+    .footer {
+      margin-top: 50px;
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <div class="header">
+      <div style="width:48px; height:48px; background:var(--accent); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:bold; font-size:24px;">SL</div>
+      <div class="title-group">
+        <h1>Privacy Policy</h1>
+        <p>Signal Layer Content Analyzer</p>
+      </div>
+    </div>
+
+    <p class="last-updated">Last Updated: October 9, 2026 &middot; Applies to Signal Layer v0.9.x</p>
+
+    <div class="highlight-box">
+      <p><strong>Core Principle:</strong> Signal Layer analyzes pages locally, inside your browser. The text of the pages you read is never transmitted. The only information that can leave your device is the optional feedback you send by pressing the 👍 / 👎 buttons, described in Section 4. There is no account, no advertising and no tracking across websites.</p>
+    </div>
+
+    <h2>1. What Signal Layer does on your device</h2>
+    <ul>
+      <li><strong>Analysis on demand:</strong> When you click "Analyze This Page", the extension reads the visible text of the active tab and computes its scores locally. For PDF pages, it re-reads the PDF you are viewing to extract its text, also locally. Nothing from this step is transmitted.</li>
+      <li><strong>Reading-time measurement (automatic):</strong> Since v0.9.0, a lightweight content script runs on the http/https pages you visit, even if you never click "Analyze", to measure two numbers: how long the tab was actively visible, and how far down the page you scrolled. It does not read page text, keystrokes, form fields or the clipboard. These two numbers, together with the page address, are passed to the extension's background worker and stored only on your device.</li>
+      <li><strong>Toolbar badge:</strong> The background worker compares the domain of the active tab with your local history in order to colour a small badge on the toolbar icon. This comparison is local.</li>
+    </ul>
+
+    <h2>2. Data stored on your device</h2>
+    <p>Signal Layer stores the following in your browser's own storage areas (Chrome Storage and IndexedDB). It never leaves your device and is not linked to any account.</p>
+    <ul>
+      <li><strong>Result cache:</strong> recent analysis results, kept for 24 hours so that reopening the popup on the same page is instant.</li>
+      <li><strong>Theme preference:</strong> the popup theme you selected.</li>
+      <li><strong>Local Memory (history):</strong> for each analysis, the page address, domain, score, atmosphere label, word count and time; a per-domain summary (first seen, last seen, number of analyses, days active); and reading sessions (domain, page address, active seconds, deepest scroll percentage). Each log is capped at about 500 entries; older entries are removed automatically.</li>
+    </ul>
+    <p>You can erase all Local Memory at any time with the trash-can button in the popup header. Removing the extension also deletes everything it stored.</p>
+
+    <h2>3. What never leaves your device</h2>
+    <ul>
+      <li>The text of the pages you analyze or read.</li>
+      <li>Your reading time and scroll data.</li>
+      <li>Your Local Memory history and result cache.</li>
+      <li>Your theme and other preferences.</li>
+    </ul>
+
+    <h2>4. Optional feedback &mdash; the only data that can leave your device</h2>
+    <p>Signal Layer sends nothing unless you press the 👍 or 👎 button under a result. When you do, the following is sent:</p>
+    <ul>
+      <li>the full address (URL) of the page you analyzed, which may include a query string, so please avoid sending feedback from pages whose address contains private information;</li>
+      <li>the Human Trace Score, your choice (accurate / inaccurate) and the page's word count;</li>
+      <li>numeric technical values from the analysis (for example vocabulary-diversity, repetition and noise indicators, and the atmosphere label).</li>
+    </ul>
+    <p>It does not include page text, your name, e-mail address or any account or device identifier.</p>
+    <ul>
+      <li><strong>Where it goes:</strong> to a Google Apps Script web endpoint operated by the developer, which appends one row to a private Google Sheet. Google hosts this endpoint and processes the request technically under its own terms.</li>
+      <li><strong>What it is used for:</strong> solely to calibrate and improve the accuracy of the scoring. It is not sold, shared for advertising, or used for profiling.</li>
+      <li><strong>Deletion:</strong> you may ask for rows relating to a page you submitted to be deleted by writing to the address in Section 9.</li>
+    </ul>
+
+    <h2>5. Third-party services</h2>
+    <p>Signal Layer uses no analytics, advertising, cloud AI or text-analysis APIs. Two technical connections exist:</p>
+    <ul>
+      <li><strong>Google Fonts:</strong> when the popup opens, your browser requests its typefaces from Google Fonts. This request is made by your browser, contains no analysis data, and may reveal your IP address and browser version to Google.</li>
+      <li><strong>Feedback endpoint:</strong> only if you press 👍 / 👎, as described in Section 4.</li>
+    </ul>
+
+    <h2>6. Chrome Web Store Limited Use Policy</h2>
+    <p>Signal Layer's use of information received through Chrome extension APIs adheres to the <a href="https://developer.chrome.com/docs/webstore/program-policies/limited-use" target="_blank">Chrome Web Store User Data Policy</a>, including the Limited Use requirements. Specifically:</p>
+    <ul>
+      <li>The extension requests only the permissions it needs: <code>activeTab</code> and <code>scripting</code> (read the active page when you click Analyze), <code>storage</code> (result cache and theme), and access to http/https pages (reading-time measurement and the toolbar badge).</li>
+      <li>Data accessed through these permissions is used only to provide the features described above.</li>
+      <li>We do not transfer or sell your data, and do not use it for advertising, credit assessment or any unrelated purpose.</li>
+    </ul>
+
+    <h2>7. Your choices</h2>
+    <ul>
+      <li>No account is needed, and feedback is entirely optional.</li>
+      <li>Erase all locally stored history with the trash-can button in the popup.</li>
+      <li>Disable or remove the extension at any time; this stops all measurement and deletes its stored data.</li>
+    </ul>
+
+    <h2>8. Changes to This Policy</h2>
+    <p>We may update this policy to reflect changes in the extension or in legal requirements. Changes are shown in the "Last Updated" date at the top of this page. Where a new version changes what data is collected or transmitted, this policy is updated before that version is released.</p>
+
+    <h2>9. Contact Us</h2>
+    <p>If you have questions about this policy or how Signal Layer handles data, please contact the developer at:</p>
+    <p><strong>Email:</strong> kimyager@gmail.com</p>
+
+  </div>
+
+  <div class="footer">
+    &copy; 2026 Signal Layer. All rights reserved. <br>
+    Local analysis &middot; Page text never sent &middot; No analysis API
+  </div>
+
+</body>
+</html>
